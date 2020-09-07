@@ -1,0 +1,18 @@
+{
+	"currentquoteid": 0,
+	"unapproved": [
+		{
+			"id": "12345",
+			"quote": "this is the quote"
+		}
+	],
+	
+	"approved": [
+		{
+			"id": "12344",
+			"quote": "this is also a quote",
+			"quoteid": 1234,
+			"userindex": 123
+		}
+	]
+}
