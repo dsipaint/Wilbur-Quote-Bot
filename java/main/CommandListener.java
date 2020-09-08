@@ -1,4 +1,5 @@
 package main;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -56,9 +57,10 @@ public class CommandListener extends ListenerAdapter
 					int quoteno = r.nextInt(quotesbyuser.size()) + 1;
 					ApprovedQuote quote = DataHandler.getUserQuoteByIndex(quoteno, id);
 					
-					EmbedBuilder eb = new EmbedBuilder();
-					eb.setTitle("Quote #" + quoteno + " by " + e.getGuild().getMemberById(id).getEffectiveName());
-					eb.setImage(quote.getQuote());
+					EmbedBuilder eb = new EmbedBuilder()
+						.setTitle("Quote #" + quoteno + " by " + e.getGuild().getMemberById(id).getEffectiveName())
+						.setColor(Server.EMBED_COL_INT)
+						.setImage(quote.getQuote());
 					e.getChannel().sendMessage(eb.build()).queue();
 				}
 				else
@@ -94,9 +96,10 @@ public class CommandListener extends ListenerAdapter
 					}
 					
 					ApprovedQuote quote = DataHandler.getUserQuoteByIndex(Integer.parseInt(args[2]), id);
-					EmbedBuilder eb = new EmbedBuilder();
-					eb.setTitle("Quote #" + args[2] + " by " + e.getGuild().getMemberById(id).getEffectiveName());
-					eb.setImage(quote.getQuote());
+					EmbedBuilder eb = new EmbedBuilder()
+							.setTitle("Quote #" + args[2] + " by " + e.getGuild().getMemberById(id).getEffectiveName())
+							.setColor(Server.EMBED_COL_INT)
+							.setImage(quote.getQuote());
 					e.getChannel().sendMessage(eb.build()).queue();
 				}
 				else
@@ -123,14 +126,17 @@ public class CommandListener extends ListenerAdapter
 					{
 						if(utils.Server.isStaff(e.getMember()))
 						{
-							Main.checkedquotes.add(new ApprovedQuote(DataHandler.getUnapprovedQuoteByUrl(args[i])));
+							Main.checkedquotes.add(new ApprovedQuote(new UnapprovedQuote(id, args[i])));
 							
 							EmbedBuilder quotePost = new EmbedBuilder()
 								.setTitle("New Quote!")
+								.setColor(Server.EMBED_COL_INT)
 								.setDescription("Check out this quote of "
 									+ e.getGuild().getMemberById(id).getEffectiveName() + "!")
 								.setImage(args[i]);
+							
 							Main.jda.getTextChannelById(Server.QUOTE_CHANNEL_ID).sendMessage(quotePost.build()).queue();
+							e.getChannel().sendMessage("Quote posted!").queue();
 						}
 						else
 						{
@@ -157,11 +163,13 @@ public class CommandListener extends ListenerAdapter
 									Main.checkedquotes.add(new ApprovedQuote(DataHandler.getUnapprovedQuoteByUrl(imgurl)));
 									EmbedBuilder quotePost = new EmbedBuilder()
 										.setTitle("New Quote!")
+										.setColor(Server.EMBED_COL_INT)
 										.setDescription("Check out this quote of "
 											+ e.getGuild().getMemberById(id).getEffectiveName() + "!")
 										.setImage(imgurl);
-									Main.jda.getTextChannelById(Server.QUOTE_CHANNEL_ID).sendMessage(quotePost.build()).queue();
 									
+									Main.jda.getTextChannelById(Server.QUOTE_CHANNEL_ID).sendMessage(quotePost.build()).queue();
+									e.getChannel().sendMessage("Quote posted!").queue();
 								}
 								else
 								{
@@ -182,9 +190,10 @@ public class CommandListener extends ListenerAdapter
 		//^quoteshelp
 		if(msg.equalsIgnoreCase(Main.PREFIX + "quoteshelp"))
 		{
-			EmbedBuilder eb = new EmbedBuilder();
-			eb.setTitle("**Quotes Help:**");
-			eb.setDescription("**" + Main.PREFIX + "quote [ping the person being quoted] [image/image url]: **"
+			EmbedBuilder eb = new EmbedBuilder()
+			.setTitle("**Quotes Help:**")
+			.setColor(Server.EMBED_COL_INT)
+			.setDescription("**" + Main.PREFIX + "quote [ping the person being quoted] [image/image url]: **"
 					+ "submits a quote by the pinged user- images can be attached instead of using"
 					+ "image urls, and you can submit multiple quotes for a user at a time by attaching"
 					+ "more images or adding more image urls to the end of the command")
@@ -205,10 +214,18 @@ public class CommandListener extends ListenerAdapter
 			return;
 		}
 		
-		if(msg.equalsIgnoreCase(Main.PREFIX + "disablequotes") && utils.Server.isStaff(e.getMember()))
+		if(utils.Server.isStaff(e.getMember()) && args[0].equalsIgnoreCase(Main.PREFIX + "disable") && args[1].equalsIgnoreCase("quotes"))
 		{
-			e.getChannel().sendMessage("*quotes feature disabled-- ask al if you want it back up*").queue();
-			Main.jda.shutdownNow();
+			try
+			{
+				DataHandler.writeData();
+			}
+			catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			e.getChannel().sendMessage("*quotes feature disabled-- ask al if you want it back up*").complete();
+			Main.jda.shutdown();
 			System.exit(0);
 		}
 	}

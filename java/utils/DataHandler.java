@@ -19,7 +19,7 @@ import main.Main;
 
 public class DataHandler
 {
-	static final String FILE_LOC = "";
+	static final String FILE_LOC = "quotes.json";
 	
 	//get a list of all the quotes a certain user has said (that have been approved)
 	public static List<ApprovedQuote> getQuotesByUser(String userid)
@@ -80,7 +80,7 @@ public class DataHandler
 			Main.checkedquotes.add(new ApprovedQuote((String) quote_obj.get("id"),
 					(String) quote_obj.get("quote"),
 					(long) quote_obj.get("quoteid"),
-					(int) quote_obj.get("userindex")));
+					Integer.parseInt(Long.toString((long) quote_obj.get("userindex"))))); //parses long to string, then to int- bear in mind for future
 		});
 		
 		//add currentquoteid
@@ -121,6 +121,8 @@ public class DataHandler
 		file_obj.put("unapproved", unapproved_arr);
 		file_obj.put("approved", approved_arr);
 		
-		file_obj.writeJSONString(new PrintWriter(new FileWriter(new File(FILE_LOC))));
+		PrintWriter pw = new PrintWriter(new FileWriter(new File(FILE_LOC)));
+		pw.println(file_obj.toJSONString());
+		pw.close();
 	}
 }

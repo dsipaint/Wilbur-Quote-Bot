@@ -9,13 +9,14 @@ public class Server
 {
 	public static final String APPROVAL_EMOTE_STR = "white_check_mark", REJECT_EMOTE_STR = "x";
 	public static final String APPROVAL_EMOTE_UNICODE = "\u2705", REJECT_EMOTE_UNICODE = "\u274C";
-	public static final String LOG_CHANNEL_ID = "625612507188559872", QUOTE_CHANNEL_ID = "599720754690392094";
+	public static final String LOG_CHANNEL_ID = "653257117536485387", QUOTE_CHANNEL_ID = "599720754690392094";
 	public static final String SERVER_ID = "565623426501443584";
+	public static final int EMBED_COL_INT = 65280;
 	
 	public static boolean isStaff(Member m)
 	{
 		for(Role r : m.getRoles())
-		{
+		{	
 			//admin: 602889336748507164  mod: 565626094917648386
 			if(r.getId().equals("602889336748507164") || r.getId().equals("565626094917648386"))
 				return true;
@@ -31,11 +32,12 @@ public class Server
 		 * This method assumes the message is a legitimate submission syntax-wise
 		 */
 		
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setTitle("New Quote Submission:");
-		eb.setAuthor(main.Main.jda.getUserById(userID).getAsTag());
-		eb.setDescription(userID + "\n" + url);
-		eb.setImage(url);
+		EmbedBuilder eb = new EmbedBuilder()
+			.setTitle("New Quote Submission:")
+			.setColor(Server.EMBED_COL_INT)
+			.setAuthor(main.Main.jda.getUserById(userID).getAsTag())
+			.setDescription(userID + "\n" + url)
+			.setImage(url);
 		
 		//send to log channel
 		main.Main.jda.getTextChannelById(LOG_CHANNEL_ID).sendMessage(eb.build()).queue((log) ->

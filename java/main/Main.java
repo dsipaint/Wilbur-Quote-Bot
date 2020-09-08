@@ -8,6 +8,8 @@ import org.json.simple.parser.ParseException;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import utils.ApprovedQuote;
 import utils.DataHandler;
 import utils.UnapprovedQuote;
@@ -23,7 +25,10 @@ public class Main
 	{
 		try
 		{
-			jda = JDABuilder.createDefault("").build();
+			jda = JDABuilder.createDefault("")
+					.enableIntents(GatewayIntent.GUILD_MEMBERS)
+					.setMemberCachePolicy(MemberCachePolicy.ALL)
+					.build();
 		}
 		catch (LoginException e)
 		{
