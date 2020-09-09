@@ -160,7 +160,7 @@ public class CommandListener extends ListenerAdapter
 								String imgurl = a.getUrl();
 								if(utils.Server.isStaff(e.getMember()))
 								{
-									Main.checkedquotes.add(new ApprovedQuote(DataHandler.getUnapprovedQuoteByUrl(imgurl)));
+									Main.checkedquotes.add(new ApprovedQuote(new UnapprovedQuote(id, imgurl)));
 									EmbedBuilder quotePost = new EmbedBuilder()
 										.setTitle("New Quote!")
 										.setColor(Server.EMBED_COL_INT)
