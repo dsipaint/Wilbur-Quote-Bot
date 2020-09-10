@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -33,7 +32,7 @@ public class CommandListener extends ListenerAdapter
 		
 		if(args[0].equalsIgnoreCase(Main.PREFIX + "quote"))
 		{
-			//^quote [ping/name]
+			//^quote [ping/id]
 			if(args.length == 2 && e.getMessage().getAttachments().size() == 0)
 			{
 				String id;
@@ -41,13 +40,13 @@ public class CommandListener extends ListenerAdapter
 					id = e.getMessage().getMentionedUsers().get(0).getId();
 				else
 				{
-					Member m = utils.Server.getMemberByName(args[1]);
-					if(m == null)
+					if(args[1].matches("\\d{18}"))
+						id = args[1];
+					else
 					{
 						e.getChannel().sendMessage("Found no users by " + args[1]).queue();
 						return;
 					}
-					id = m.getId();
 				}
 				
 				//i.e. if a user is in the database
@@ -71,19 +70,19 @@ public class CommandListener extends ListenerAdapter
 			}
 			else if(args.length >= 3 && args[2].matches("\\d+"))
 			{
-				//^quote [ping/user] [number]
+				//^quote [ping] [number]
 				String id;
 				if(e.getMessage().getMentionedUsers().size() > 0 && args[1].matches("<@!\\d+>"))
 					id = e.getMessage().getMentionedUsers().get(0).getId();
 				else
 				{
-					Member m = utils.Server.getMemberByName(args[1]);
-					if(m == null)
+					if(args[1].matches("\\d{18}"))
+						id = args[1];
+					else
 					{
 						e.getChannel().sendMessage("Found no users by " + args[1]).queue();
 						return;
 					}
-					id = m.getId();
 				}
 				
 				List<ApprovedQuote> quotesbyuser = DataHandler.getQuotesByUser(id);
@@ -131,7 +130,7 @@ public class CommandListener extends ListenerAdapter
 							EmbedBuilder quotePost = new EmbedBuilder()
 								.setTitle("New Quote!")
 								.setColor(Server.EMBED_COL_INT)
-								.setDescription("Check out this quote of "
+								.setDescription("Check out this quote from "
 									+ e.getGuild().getMemberById(id).getEffectiveName() + "!")
 								.setImage(args[i]);
 							
@@ -141,7 +140,7 @@ public class CommandListener extends ListenerAdapter
 						else
 						{
 							Main.uncheckedquotes.add(new UnapprovedQuote(id, args[i]));
-							utils.Server.sendLog(userID, args[i]);
+							utils.Server.sendJudgement(userID, args[i]);
 							e.getChannel().sendMessage("Your quote has been submitted!").queue();
 						}
 					}
@@ -164,7 +163,7 @@ public class CommandListener extends ListenerAdapter
 									EmbedBuilder quotePost = new EmbedBuilder()
 										.setTitle("New Quote!")
 										.setColor(Server.EMBED_COL_INT)
-										.setDescription("Check out this quote of "
+										.setDescription("Check out this quote from "
 											+ e.getGuild().getMemberById(id).getEffectiveName() + "!")
 										.setImage(imgurl);
 									
@@ -174,7 +173,7 @@ public class CommandListener extends ListenerAdapter
 								else
 								{
 									Main.uncheckedquotes.add(new UnapprovedQuote(id, imgurl));
-									utils.Server.sendLog(userID, imgurl);
+									utils.Server.sendJudgement(userID, imgurl);
 									e.getChannel().sendMessage("Your quote has been submitted!").queue();
 								}
 							}
@@ -198,16 +197,16 @@ public class CommandListener extends ListenerAdapter
 					+ "image urls, and you can submit multiple quotes for a user at a time by attaching"
 					+ "more images or adding more image urls to the end of the command")
 			
-				.appendDescription("\n\n**" + Main.PREFIX + "quote [ping someone or type the first part of a person's name]: **"
+				.appendDescription("\n\n**" + Main.PREFIX + "quote [ping/id]: **"
 					+ "get a random quote from the specified person")
 				
-				.appendDescription("\n\n**" + Main.PREFIX + "quote [ping someone or type the first part of a person's name] [number]: **"
+				.appendDescription("\n\n**" + Main.PREFIX + "quote [ping/id] [number]: **"
 					+ "get a specific quote from the specified person")
 				
 				.appendDescription("\n\n**" + Main.PREFIX + "quoteshelp: **"
 					+ "displays this message")
 				
-				.appendDescription("\n\n**" + Main.PREFIX + "disablequotes: **"
+				.appendDescription("\n\n**" + Main.PREFIX + "disable quotes: **"
 					+ "(staff only) disables the quotes feature");
 			e.getChannel().sendMessage(eb.build()).queue();
 			

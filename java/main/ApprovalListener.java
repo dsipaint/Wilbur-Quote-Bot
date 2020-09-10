@@ -1,5 +1,6 @@
 package main;
 import java.io.IOException;
+import java.time.Instant;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -17,7 +18,7 @@ public class ApprovalListener extends ListenerAdapter
 		if(!e.getGuild().getId().equals(Server.SERVER_ID)) //only wilbur's server
 			return;
 		
-		if(e.getChannel().getId().equals(Server.LOG_CHANNEL_ID))
+		if(e.getChannel().getId().equals(Server.JUDGEMENT_CHANNEL_ID))
 		{
 			//bot ignores all non-staff
 			if(!utils.Server.isStaff(e.getMember()))
@@ -64,9 +65,39 @@ public class ApprovalListener extends ListenerAdapter
 							+ e.getGuild().getMemberById(userID).getEffectiveName() + "!")
 						.setImage(imgurl);
 					Main.jda.getTextChannelById(Server.QUOTE_CHANNEL_ID).sendMessage(quotePost.build()).queue();
+					
+					e.getChannel().sendMessage("Quote approved!").queue();
+					
+					EmbedBuilder log = new EmbedBuilder()
+							.setTitle("Quote approved")
+							.setColor(Server.EMBED_COL_INT)
+							.addField("From: ", e.getGuild().getMemberById(quote.getId()).getUser().getAsTag(), true)
+							.addField("Approved by: ", e.getUser().getAsTag(), true)
+							.setImage(quote.getQuote())
+							.setTimestamp(Instant.now());
+					
+					e.getGuild().getTextChannelById(Server.LOG_CHANNEL_ID).sendMessage(log.build()).queue();
+					
+					msg.delete().queue();
 				}
 				
-				msg.delete().queue();
+				//rejected
+				if(e.getReactionEmote().getName().equals(Server.REJECT_EMOTE_UNICODE))
+				{
+					e.getChannel().sendMessage("Quote rejected").queue();
+					
+					EmbedBuilder log = new EmbedBuilder()
+							.setTitle("Quote rejected")
+							.setColor(Server.EMBED_COL_INT)
+							.addField("From: ", e.getGuild().getMemberById(quote.getId()).getUser().getAsTag(), true)
+							.addField("Rejected by: ", e.getUser().getAsTag(), true)
+							.setImage(quote.getQuote())
+							.setTimestamp(Instant.now());
+					
+					e.getGuild().getTextChannelById(Server.LOG_CHANNEL_ID).sendMessage(log.build()).queue();
+					
+					msg.delete().queue();
+				}
 			});
 		}
 	}
