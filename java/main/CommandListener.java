@@ -30,23 +30,25 @@ public class CommandListener extends ListenerAdapter
 		if(!e.getGuild().getId().equals(Server.SERVER_ID)) //only wilbur's server
 			return;
 		
-		if(args[0].equalsIgnoreCase(Main.PREFIX + "quote"))
+		if(args[0].equalsIgnoreCase(Main.PREFIX + "quote")) //^quote [ping/id]
 		{
-			//^quote [ping/id]
 			if(args.length == 2 && e.getMessage().getAttachments().size() == 0)
 			{
-				String id;
-				if(e.getMessage().getMentionedUsers().size() > 0 && args[1].matches("<@!\\d+>"))
-					id = e.getMessage().getMentionedUsers().get(0).getId();
+				String id = null;
+				if(args[1].matches("<@!\\d+>"))
+					id = args[1].substring(3, 21);
+				else if(args[1].matches("\\d{18}"))
+					id = args[1];
 				else
 				{
-					if(args[1].matches("\\d{18}"))
-						id = args[1];
-					else
-					{
-						e.getChannel().sendMessage("Found no users by " + args[1]).queue();
-						return;
-					}
+					e.getChannel().sendMessage("Invalid user!").queue();
+					return;
+				}
+				
+				if(e.getGuild().getMemberById(id) == null)
+				{
+					e.getChannel().sendMessage("Could not find user!").queue();
+					return;
 				}
 				
 				//i.e. if a user is in the database
@@ -68,21 +70,23 @@ public class CommandListener extends ListenerAdapter
 							+ e.getGuild().getMemberById(id).getEffectiveName() + "!").queue();
 				}
 			}
-			else if(args.length >= 3 && args[2].matches("\\d+"))
+			else if(args.length >= 3 && args[2].matches("\\d+")) //^quote [ping] [number]
 			{
-				//^quote [ping] [number]
-				String id;
-				if(e.getMessage().getMentionedUsers().size() > 0 && args[1].matches("<@!\\d+>"))
-					id = e.getMessage().getMentionedUsers().get(0).getId();
+				String id = null;
+				if(args[1].matches("<@!\\d+>"))
+					id = args[1].substring(3, 21);
+				else if(args[1].matches("\\d{18}"))
+					id = args[1];
 				else
 				{
-					if(args[1].matches("\\d{18}"))
-						id = args[1];
-					else
-					{
-						e.getChannel().sendMessage("Found no users by " + args[1]).queue();
-						return;
-					}
+					e.getChannel().sendMessage("Invalid user!").queue();
+					return;
+				}
+				
+				if(e.getGuild().getMemberById(id) == null)
+				{
+					e.getChannel().sendMessage("Could not find user!").queue();
+					return;
 				}
 				
 				List<ApprovedQuote> quotesbyuser = DataHandler.getQuotesByUser(id);
@@ -107,16 +111,24 @@ public class CommandListener extends ListenerAdapter
 							+ e.getGuild().getMemberById(id).getEffectiveName() + "!").queue();
 				}
 			}
-			else
-			{
-				if(!(e.getMessage().getMentionedMembers().size() == 1 && args[1].matches("<@!\\d+>")))
+			else //^quote [ping] [url]	
+			{	
+				String id = null;
+				if(args[1].matches("<@!\\d+>"))
+					id = args[1].substring(3, 21);
+				else if(args[1].matches("\\d{18}"))
+					id = args[1];
+				else
 				{
-					e.getChannel().sendMessage("No user specified!").queue();
+					e.getChannel().sendMessage("Invalid user!").queue();
 					return;
 				}
 				
-				//^quote [ping] [url]		
-				String id = e.getMessage().getMentionedUsers().get(0).getId();
+				if(e.getGuild().getMemberById(id) == null)
+				{
+					e.getChannel().sendMessage("Could not find user!").queue();
+					return;
+				}
 				
 				for(int i = 2; i < args.length; i++)
 				{
