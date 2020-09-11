@@ -37,11 +37,11 @@ public class ApprovalListener extends ListenerAdapter
 				//every embed log should have an image with a url, and a user id
 				MessageEmbed em = msg.getEmbeds().get(0);
 				//formatted like this in utils.Server.sendLog() (may change in the future)
-				String userID = em.getDescription().split("\n")[0];
 				String imgurl = em.getDescription().split("\n")[1];
 				
 				//always remove from the pending quotes list
 				UnapprovedQuote quote = Main.uncheckedquotes.remove(Main.uncheckedquotes.indexOf(DataHandler.getUnapprovedQuoteByUrl(imgurl)));
+				String userID = quote.getId();
 				
 				//approved
 				if(e.getReactionEmote().getName().equals(Server.APPROVAL_EMOTE_UNICODE))

@@ -19,7 +19,7 @@ import main.Main;
 
 public class DataHandler
 {
-	static final String FILE_LOC = "quotes.json";
+	static final String FILE_LOC = "./quotes.json";
 	
 	//get a list of all the quotes a certain user has said (that have been approved)
 	public static List<ApprovedQuote> getQuotesByUser(String userid)

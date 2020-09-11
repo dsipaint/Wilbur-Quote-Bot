@@ -35,8 +35,10 @@ public class CommandListener extends ListenerAdapter
 			if(args.length == 2 && e.getMessage().getAttachments().size() == 0)
 			{
 				String id = null;
-				if(args[1].matches("<@!\\d+>"))
+				if(args[1].matches("<@!\\d{18}>"))
 					id = args[1].substring(3, 21);
+				else if(args[1].matches("<@\\d{18}>"))
+					id = args[1].substring(2, 20);
 				else if(args[1].matches("\\d{18}"))
 					id = args[1];
 				else
@@ -73,8 +75,10 @@ public class CommandListener extends ListenerAdapter
 			else if(args.length >= 3 && args[2].matches("\\d+")) //^quote [ping] [number]
 			{
 				String id = null;
-				if(args[1].matches("<@!\\d+>"))
+				if(args[1].matches("<@!\\d{18}>"))
 					id = args[1].substring(3, 21);
+				else if(args[1].matches("<@\\d{18}>"))
+					id = args[1].substring(2, 20);
 				else if(args[1].matches("\\d{18}"))
 					id = args[1];
 				else
@@ -114,8 +118,11 @@ public class CommandListener extends ListenerAdapter
 			else //^quote [ping] [url]	
 			{	
 				String id = null;
-				if(args[1].matches("<@!\\d+>"))
+				System.out.println(args[1] + "\t" + id); //DEBUG
+				if(args[1].matches("<@!\\d{18}>"))
 					id = args[1].substring(3, 21);
+				else if(args[1].matches("<@\\d{18}>"))
+					id = args[1].substring(2, 20);
 				else if(args[1].matches("\\d{18}"))
 					id = args[1];
 				else
