@@ -61,7 +61,7 @@ public class ApprovalListener extends ListenerAdapter
 					EmbedBuilder quotePost = new EmbedBuilder()
 						.setTitle("New Quote!")
 						.setColor(Server.EMBED_COL_INT)
-						.setDescription("Check out this quote of "
+						.setDescription("Check out this quote from "
 							+ e.getGuild().getMemberById(userID).getEffectiveName() + "!")
 						.setImage(imgurl);
 					Main.jda.getTextChannelById(Server.QUOTE_CHANNEL_ID).sendMessage(quotePost.build()).queue();

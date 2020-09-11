@@ -213,8 +213,8 @@ public class CommandListener extends ListenerAdapter
 			.setColor(Server.EMBED_COL_INT)
 			.setDescription("**" + Main.PREFIX + "quote [ping the person being quoted] [image/image url]: **"
 					+ "submits a quote by the pinged user- images can be attached instead of using"
-					+ "image urls, and you can submit multiple quotes for a user at a time by attaching"
-					+ "more images or adding more image urls to the end of the command")
+					+ " image urls, and you can submit multiple quotes for a user at a time by attaching"
+					+ " more images or adding more image urls to the end of the command")
 			
 				.appendDescription("\n\n**" + Main.PREFIX + "quote [ping/id]: **"
 					+ "get a random quote from the specified person")
