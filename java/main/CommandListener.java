@@ -132,18 +132,18 @@ public class CommandListener extends ListenerAdapter
 					e.getChannel().sendMessage("Could not find user").queue();
 					return;
 				}
+				
+				if(id.equals(e.getAuthor().getId()))
+				{
+					e.getChannel().sendMessage("You can't quote yourself!").queue();
+					return;
+				}
 								
 				for(int i = 2; i < args.length; i++)
 				{
 					//img url regex
 					if(args[i].matches("http(s?):\\/\\/.*(\\.png|\\.jpeg|\\.jpg|\\.JPG|\\.PNG)"))
-					{
-						if(id.equals(e.getAuthor().getId()))
-						{
-							e.getChannel().sendMessage("You can't quote yourself!").queue();
-							return;
-						}
-						
+					{						
 						try
 						{
 							Statement s = con.createStatement();
